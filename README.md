@@ -41,14 +41,14 @@ Key features:
    4.  **Use of DropOut** ✓
    5.  **Use of Fully Connected Layer or GAP** ✓
 6. Submission Items:
-   1.  Your Repo link where we can see your test logs (to see test accuracy) IN THE README.MD section: this file
-   2.  Your GitHub Actions Link: 
-   3.  Your Test file link: 
-   4.  Your Validation Test Accuracy: 99.50 (18th epoch)
+   1.  Your Repo link where we can see your test logs (to see test accuracy) IN THE README.MD section: **Training Logs Down at the bottom of THIS FILE**
+   2.  Your GitHub Actions Link: https://github.com/vinaysupermario/Assignment-6/actions/runs/12454558603/job/34765947698
+   3.  Your Test file link: https://github.com/vinaysupermario/Assignment-6/blob/main/test_model.py
+   4.  Your Validation Test Accuracy: 99.57 (19th epoch)
 7.  Result:
     1. Parameters: 12.1k
     2. Best Train Accuracy: 99.23
-    3. Best Test Accuracy: 99.50
+    3. Best Test Accuracy: 99.40(11th epoch), 99.57(19th epoch)
     4. Epochs: 20
 
 ## Training Logs
