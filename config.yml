@@ -1,9 +1,9 @@
-name: ML Pipeline
+name: Model Tests
 
 on: [push]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
     
     steps:
@@ -19,10 +19,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Train model
-      run: |
-        python train.py
-    
-    - name: Run tests
+    - name: Run model tests
       run: |
         pytest test_model.py -v

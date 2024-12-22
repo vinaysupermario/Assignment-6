@@ -36,6 +36,7 @@ logs/
 runs/
 tensorboard/
 wandb/
+!models/*.pth  # Allow .pth files in models directory
 
 # IDE specific
 .idea/

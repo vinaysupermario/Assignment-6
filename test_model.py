@@ -7,9 +7,10 @@ import glob
 import os
 
 def get_latest_model():
-    model_files = glob.glob('model_*.pth')
+    """Get the latest model file from the models directory"""
+    model_files = glob.glob('models/model_*.pth')
     if not model_files:
-        raise FileNotFoundError("No model files found. Please train the model first.")
+        raise FileNotFoundError("No model files found in models directory. Please add a trained model first.")
     return max(model_files, key=os.path.getctime)
 
 def test_input_output_shape():
