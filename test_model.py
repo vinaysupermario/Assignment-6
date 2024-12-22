@@ -74,7 +74,7 @@ def test_model_accuracy():
     latest_model = get_latest_model()
     print_and_log(f"Loading model from: {latest_model}")
     
-    model.load_state_dict(torch.load(latest_model, weights_only=True))
+    model.load_state_dict(torch.load(latest_model, weights_only=torch.cuda.is_available()))
     model.eval()
     
     # Load test dataset
