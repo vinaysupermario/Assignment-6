@@ -202,10 +202,16 @@ def run():
         
     # Save model with timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    save_path = f'model_{timestamp}.pth'
-    torch.save(model.state_dict(), save_path)
+    save_path = f'models/model_{timestamp}.pth'
+    
+    # Save model state dict to CPU
+    model_state = model.cpu().state_dict()
+    torch.save(model_state, save_path)
     print(f"Model saved as {save_path}")
-
+    
+    # Move model back to original device if needed
+    model.to(device)
+    
     return model, save_path
 
 if __name__ == "__main__":
