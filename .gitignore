@@ -28,15 +28,12 @@ ENV/
 
 # ML specific
 data/
-model_*.pth
 *.pt
-*.pth
 *.ckpt
 logs/
 runs/
 tensorboard/
 wandb/
-!models/*.pth  # Allow .pth files in models directory
 
 # IDE specific
 .idea/
@@ -47,7 +44,6 @@ wandb/
 
 # Jupyter Notebook
 .ipynb_checkpoints
-*.ipynb
 
 # Testing
 .pytest_cache/
