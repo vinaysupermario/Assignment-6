@@ -12,25 +12,34 @@
     - Model accuracy (> 95% on first test set)
 3. Do not save the model using Github Actions, because to properly train it we need 20 epochs. So we train it manually and upload the model manually over to github.
 
-## The model architecture is a simple CNN with:
- - 2 convolutional layers
- - 2 max pooling layers
- - 2 fully connected layers
- - ReLU activation functions
+## The model architecture:
+Our Convolutional Neural Network uses:
+- 9 Convolutional blocks with:
+  - Conv2d layers (varying channels: 1→8→16→8→16→16→16→16→16→10)
+  - ReLU activation
+  - Batch Normalization
+  - Dropout (0.05)
+- 1 MaxPool2d layer
+- Global Average Pooling (GAP)
+- Log Softmax output
 
-**The saved model file will have a timestamp suffix (e.g., model_20240314_153022.pth) for tracking when it was trained.**
+Key features:
+- Uses 1x1 convolutions for channel reduction
+- Employs skip connections
+- Consistent dropout rate of 0.05
+- Total parameters: ~12.1k
 
 ## Target:
-1. Less than 20k parameters
-2. Less than 20 epochs
-3. To use Batch Normalization and Dropout
-4. To use a Fully Connected Layer or GAP
+1. Less than 20k parameters ✓
+2. Less than 20 epochs ✓
+3. To use Batch Normalization and Dropout ✓
+4. To use a Fully Connected Layer or GAP ✓
 5. Create a GitHub Actions file, so we can check:
-   1.  **Total Parameter Count Test**
-   2.  **Total Epoch Count Test**
-   3.  **Use of Batch Normalization**
-   4.  **Use of DropOut**
-   5.  **Use of Fully Connected Layer or GAP**
+   1.  **Total Parameter Count Test** ✓
+   2.  **Total Epoch Count Test** ✓
+   3.  **Use of Batch Normalization** ✓
+   4.  **Use of DropOut** ✓
+   5.  **Use of Fully Connected Layer or GAP** ✓
 6. Submission Items:
    1.  Your Repo link where we can see your test logs (to see test accuracy) IN THE README.MD section: this file
    2.  Your GitHub Actions Link: 
