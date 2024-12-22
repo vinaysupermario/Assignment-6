@@ -1,6 +1,13 @@
 name: Model Tests
 
-on: [push]
+# Change from 'on: [push]' to manual workflow dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Reason for running tests'
+        required: true
+        default: 'Manual model accuracy verification'
 
 jobs:
   test:
