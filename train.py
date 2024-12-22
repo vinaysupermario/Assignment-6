@@ -1,22 +1,15 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import datasets, transforms
 from datetime import datetime
 import os
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.optim as optim
-from torchvision import datasets, transforms
-
-"""## 4. Define your NN Model"""
-
 dropout_value = 0.05
 class PerfectNet(nn.Module):
     def __init__(self):
-        super(Net, self).__init__()
+        super(PerfectNet, self).__init__()
         self.convblock1 = nn.Sequential(
             nn.Conv2d(in_channels=1, out_channels=8, kernel_size=(3, 3), padding=0, bias=False),
             nn.ReLU(),
@@ -92,6 +85,7 @@ class PerfectNet(nn.Module):
         return F.log_softmax(x, dim=-1)
 
 def train_model(model, device, train_loader, optimizer, epoch):
+    from tqdm import tqdm
     model.train()
     pbar = tqdm(train_loader)
     correct = 0
@@ -103,7 +97,6 @@ def train_model(model, device, train_loader, optimizer, epoch):
         y_pred = model(data)
 
         loss = F.nll_loss(y_pred, target)
-        train_losses.append(loss)
 
         loss.backward()
         optimizer.step()
@@ -113,9 +106,8 @@ def train_model(model, device, train_loader, optimizer, epoch):
         processed += len(data)
 
         pbar.set_description(desc= f'Loss={loss.item()} Batch_id={batch_idx} Accuracy={100*correct/processed:0.2f}')
-        train_acc.append(100*correct/processed)
 
-def test(model, device, test_loader):
+def test_model(model, device, test_loader):
     model.eval()
     test_loss = 0
     correct = 0
@@ -128,46 +120,41 @@ def test(model, device, test_loader):
             correct += pred.eq(target.view_as(pred)).sum().item()
 
     test_loss /= len(test_loader.dataset)
-    test_losses.append(test_loss)
 
     print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.2f}%)\n'.format(
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
-    test_acc.append(100. * correct / len(test_loader.dataset))
-
-"""## 10. Run, Train and Test the Model"""
-
-def train_model():
-    # Set device
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# def train_model():
+#     # Set device
+#     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # Load MNIST dataset
-    transform = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.1307,), (0.3081,))
-    ])
+#     # Load MNIST dataset
+#     transform = transforms.Compose([
+#         transforms.ToTensor(),
+#         transforms.Normalize((0.1307,), (0.3081,))
+#     ])
     
-    train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
-    train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
+#     train_dataset = datasets.MNIST('./data', train=True, download=True, transform=transform)
+#     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
     
-    # Initialize model
-    model = SimpleCNN().to(device)
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters())
+#     # Initialize model
+#     model = SimpleCNN().to(device)
+#     criterion = nn.CrossEntropyLoss()
+#     optimizer = optim.Adam(model.parameters())
     
-    # Train for 1 epoch
-    model.train()
-    for batch_idx, (data, target) in enumerate(train_loader):
-        data, target = data.to(device), target.to(device)
-        optimizer.zero_grad()
-        output = model(data)
-        loss = criterion(output, target)
-        loss.backward()
-        optimizer.step()
+#     # Train for 1 epoch
+#     model.train()
+#     for batch_idx, (data, target) in enumerate(train_loader):
+#         data, target = data.to(device), target.to(device)
+#         optimizer.zero_grad()
+#         output = model(data)
+#         loss = criterion(output, target)
+#         loss.backward()
+#         optimizer.step()
         
-        if batch_idx % 100 == 0:
-            print(f'Batch {batch_idx}/{len(train_loader)}, Loss: {loss.item():.4f}')
+#         if batch_idx % 100 == 0:
+#             print(f'Batch {batch_idx}/{len(train_loader)}, Loss: {loss.item():.4f}')
     
 def run():
     from torch.optim.lr_scheduler import StepLR
@@ -202,15 +189,16 @@ def run():
     train_loader = torch.utils.data.DataLoader(train, **dataloader_args)
     test_loader = torch.utils.data.DataLoader(test, **dataloader_args)
 
+    use_cuda = torch.cuda.is_available()
+    device = torch.device("cuda" if use_cuda else "cpu")
     model =  PerfectNet().to(device)
     optimizer = optim.SGD(model.parameters(), lr=0.025, momentum=0.9)
 
     EPOCHS = 20
     for epoch in range(EPOCHS):
         print("EPOCH:", epoch)
-        train(model, device, train_loader, optimizer, epoch)
-        scheduler.step()
-        test(model, device, test_loader)
+        train_model(model, device, train_loader, optimizer, epoch)
+        test_model(model, device, test_loader)
         
     # Save model with timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -222,5 +210,3 @@ def run():
 
 if __name__ == "__main__":
     run()
-    
-    

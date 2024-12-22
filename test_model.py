@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torchvision import datasets, transforms
-from train import SimpleCNN
+from train import PerfectNet
 import pytest
 import glob
 import os
@@ -11,7 +11,7 @@ def get_latest_model():
     return max(model_files, key=os.path.getctime)
 
 def test_model_architecture():
-    model = SimpleCNN()
+    model = PerfectNet()
     
     # Test input shape
     test_input = torch.randn(1, 1, 28, 28)
@@ -26,9 +26,9 @@ def test_model_accuracy():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # Load the latest model
-    model = SimpleCNN().to(device)
+    model = PerfectNet().to(device)
     latest_model = get_latest_model()
-    model.load_state_dict(torch.load(latest_model))
+    model.load_state_dict(torch.load(latest_model, weights_only=True))
     model.eval()
     
     # Load test dataset
@@ -37,7 +37,7 @@ def test_model_accuracy():
         transforms.Normalize((0.1307,), (0.3081,))
     ])
     test_dataset = datasets.MNIST('./data', train=False, download=True, transform=transform)
-    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=1000, shuffle=False)
+    test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=512, shuffle=False)
     
     correct = 0
     total = 0
