@@ -6,6 +6,7 @@ from torchvision import datasets, transforms
 from datetime import datetime
 import os
 
+EPOCHS = 20
 dropout_value = 0.05
 class PerfectNet(nn.Module):
     def __init__(self):
@@ -194,7 +195,6 @@ def run():
     model =  PerfectNet().to(device)
     optimizer = optim.SGD(model.parameters(), lr=0.025, momentum=0.9)
 
-    EPOCHS = 20
     for epoch in range(EPOCHS):
         print("EPOCH:", epoch)
         train_model(model, device, train_loader, optimizer, epoch)
