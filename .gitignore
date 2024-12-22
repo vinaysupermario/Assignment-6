@@ -29,7 +29,6 @@ ENV/
 # ML specific
 data/
 *.pt
-*.pth
 !models/*.pth  # Allow .pth files in models directory
 *.ckpt
 logs/
