@@ -65,7 +65,7 @@ def test_epoch_count():
     print_and_log(f"\nEpoch count test passed: {EPOCHS} epochs")
 
 def test_model_accuracy():
-    """Test 7: Check model accuracy on test set"""
+    """Test 7: Check model accuracy on test set (should be > 99.4%)"""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print_and_log(f"\nUsing device: {device}")
     
@@ -102,7 +102,7 @@ def test_model_accuracy():
     
     accuracy = 100 * correct / total
     print_and_log(f"\nAccuracy test result: {accuracy:.2f}% accuracy")
-    assert accuracy > 95, f"Model accuracy is {accuracy:.2f}%, should be > 95%"
+    assert accuracy > 99.4, f"Model accuracy is {accuracy:.2f}%, should be > 99.4%"
 
 if __name__ == "__main__":
     pytest.main(["-v", "--capture=no", __file__]) 
