@@ -5,6 +5,7 @@ from train import PerfectNet
 import pytest
 import glob
 import os
+import sys
 
 def get_latest_model():
     """Get the latest model file from the models directory"""
@@ -13,34 +14,39 @@ def get_latest_model():
         raise FileNotFoundError("No model files found in models directory. Please add a trained model first.")
     return max(model_files, key=os.path.getctime)
 
+def print_and_log(message):
+    """Helper function to ensure message is both printed and logged"""
+    print(message, file=sys.stderr)
+    return message
+
 def test_input_output_shape():
     """Test 1: Check model's input/output architecture"""
     model = PerfectNet()
     test_input = torch.randn(1, 1, 28, 28)
     output = model(test_input)
     assert output.shape == (1, 10), "Output shape should be (1, 10)"
-    print(f"Model shape test passed: Input (1, 1, 28, 28) -> Output {tuple(output.shape)}")
+    print_and_log(f"\nModel shape test passed: Input (1, 1, 28, 28) -> Output {tuple(output.shape)}")
 
 def test_parameter_count():
     """Test 2: Verify parameter count is less than 20k"""
     model = PerfectNet()
     total_params = sum(p.numel() for p in model.parameters())
     assert total_params < 20000, f"Model has {total_params} parameters, should be less than 20000"
-    print(f"Parameter count test passed: {total_params} parameters")
+    print_and_log(f"\nParameter count test passed: {total_params} parameters")
 
 def test_batch_normalization():
     """Test 3: Check for Batch Normalization layers"""
     model = PerfectNet()
     has_batch_norm = any(isinstance(module, nn.BatchNorm2d) for module in model.modules())
     assert has_batch_norm, "Model should use Batch Normalization"
-    print("Batch Normalization test passed")
+    print_and_log("\nBatch Normalization test passed")
 
 def test_dropout():
     """Test 4: Check for Dropout layers"""
     model = PerfectNet()
     has_dropout = any(isinstance(module, nn.Dropout) for module in model.modules())
     assert has_dropout, "Model should use Dropout"
-    print("Dropout test passed")
+    print_and_log("\nDropout test passed")
 
 def test_gap_or_fc():
     """Test 5: Verify use of GAP or Fully Connected layer"""
@@ -50,22 +56,24 @@ def test_gap_or_fc():
     has_fc = any(isinstance(module, nn.Linear) for module in model.modules())
     
     assert has_gap or has_fc, "Model should use either Global Average Pooling or Fully Connected Layer"
-    print("GAP/FC layer test passed")
+    print_and_log("\nGAP/FC layer test passed")
 
 def test_epoch_count():
     """Test 6: Verify epoch count is less than 20"""
-    # This is a placeholder test since epoch count is controlled in train.py
     from train import EPOCHS
     assert EPOCHS <= 20, f"Epoch count ({EPOCHS}) should be less than or equal to 20"
-    print(f"Epoch count test passed: {EPOCHS} epochs")
+    print_and_log(f"\nEpoch count test passed: {EPOCHS} epochs")
 
 def test_model_accuracy():
     """Test 7: Check model accuracy on test set"""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    print_and_log(f"\nUsing device: {device}")
     
     # Load the latest model
     model = PerfectNet().to(device)
     latest_model = get_latest_model()
+    print_and_log(f"Loading model from: {latest_model}")
+    
     model.load_state_dict(torch.load(latest_model, weights_only=True))
     model.eval()
     
@@ -89,8 +97,8 @@ def test_model_accuracy():
             correct += (predicted == target).sum().item()
     
     accuracy = 100 * correct / total
-    print(f"Accuracy test passed: {accuracy:.2f}% accuracy")
+    print_and_log(f"\nAccuracy test result: {accuracy:.2f}% accuracy")
     assert accuracy > 95, f"Model accuracy is {accuracy:.2f}%, should be > 95%"
 
 if __name__ == "__main__":
-    pytest.main(["-v", __file__]) 
+    pytest.main(["-v", "--capture=no", __file__]) 
